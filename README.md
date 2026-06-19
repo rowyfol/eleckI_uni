@@ -4,6 +4,11 @@ A fully discrete 2-to-1 multiplexer built from NPN transistors, resistors, and d
 
 ---
 
+## view schematic online:
+[0](https://kicanvas.org/?repo=https%3A%2F%2Fgithub.com%2Frowyfol%2FElec101%2Ftree%2Fmain%2FKiCad)
+
+---
+
 ## Overview
 
 | | |
