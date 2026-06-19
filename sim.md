@@ -630,11 +630,3 @@ Vout (S̄)
 
 4. **Debugging is where you learn.** The circuit "worked on paper" but failed on the breadboard. Tracing voltages node by node revealed the real problem — a floating emitter.
 
----
-
-<div align="center">
-
-**Built by Ashkan Namjoo & Sadra Jahanshalo**  
-*Electronics I — Discrete RTL Design*
-
-</div>
