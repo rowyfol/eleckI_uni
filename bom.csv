@@ -1,7 +1,7 @@
 ﻿Name,Quantity,Component
 "Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8",8," NPN Transistor (BJT)"
 "R1, R9, R10, R11",4,"1 kΩ Resistor"
-"R2, R4, R5, R6, R7, R8, R13 ,R14",6,"10 kΩ Resistor"
+"R2, R4, R5, R6, R7, R8, R13 ,R14",8,"10 kΩ Resistor"
 "D1",1,"Green LED"
 "R12",1,"330 Ω Resistor"
 "BAT1",1," 9V Battery"
