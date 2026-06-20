@@ -2,7 +2,6 @@
 
 % ============================================================
 %  ELECTRONICS I PROJECT REPORT
-%  Clean, readable, and authentic style
 % ============================================================
 
 \usepackage[utf8]{inputenc}
@@ -131,6 +130,7 @@
 \textbf{Course:} & Electronics I \\
 \textbf{Supervisor:} & Dr. Shatrian \\
 \textbf{Authors:} & Ashkan Namjoo \quad \& \quad Sadra Jahanshalo \\
+\textbf{\quad} & 403412087\quad \quad \quad \quad \quad \quad403412030 \\
 \textbf{University:} & Shahid Bahonar University of Kerman \\
 \textbf{Date:} & \today \\
 \end{tabular}
@@ -348,10 +348,6 @@ This is a safe, bright current for a standard 5mm LED.
 \subsection{Power Supply (LM7805)}
 
 We used an LM7805 linear voltage regulator to provide a clean, stable +5V rail from a 9V battery. The LM7805 is a three-terminal regulator that maintains its output at exactly 5V regardless of load variations, as long as the input stays at least 2--3V above the output. This stability is important for RTL circuits because transistor thresholds and logic levels depend directly on the supply voltage.
-
-\begin{keypoint}
-\textbf{Why a regulator matters:} Without the LM7805, a fresh 9V battery would start at about 9.6V and drop over time. The changing supply would shift the logic HIGH level and alter the base current, making the circuit behave inconsistently. The LM7805 fixes the rail at 5V, so the transistor switching stays predictable.
-\end{keypoint}
 
 % ============================================================
 \section{The Breadboard Build}
