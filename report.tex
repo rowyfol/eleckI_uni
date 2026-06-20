@@ -203,27 +203,52 @@ Figure~\ref{fig:logic} shows the complete logic diagram.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[logic gate IEC, scale=1.0, transform shape]
-  \node[not gate, draw=primary, line width=1.5pt, minimum width=1cm, minimum height=0.8cm] (not) at (0,0) {};
-  \draw[primary, line width=1.2pt, -{Stealth}] (-2.5,0) -- (not.input) node[midway, above, font=\small] {$S$};
-  \draw[primary, line width=1.2pt] (not.output) -- (1.5,0) node[right, font=\small] {$\overline{S}$};
+\begin{tikzpicture}[
+  logic gate IEC,
+  line join=round,
+  line cap=round,
+  scale=1.15,
+  transform shape
+]
 
-  \node[nand gate, draw=accent, line width=1.5pt, logic gate inputs=nn, minimum width=1.2cm, minimum height=0.9cm] (nand1) at (4.5,1.8) {};
-  \node[nand gate, draw=accent, line width=1.5pt, logic gate inputs=nn, minimum width=1.2cm, minimum height=0.9cm] (nand2) at (4.5,-1.8) {};
-  \node[nand gate, draw=secondary, line width=1.5pt, logic gate inputs=nn, minimum width=1.2cm, minimum height=0.9cm] (nand3) at (9,0) {};
+% --- Gates ---
+\node[not gate, draw=primary, line width=1.5pt, minimum width=1cm, minimum height=0.8cm] (not) at (0,0) {};
 
-  \draw[primary, line width=1pt] (1.5,0) |- (nand1.input 2);
-  \draw[primary, line width=1.2pt, -{Stealth}] (-2.5,1.8) -- (nand1.input 1) node[midway, above, font=\small] {$D_0$};
-  \draw[primary, line width=1.2pt, -{Stealth}] (-2.5,-1.8) -- (nand2.input 2) node[midway, above, font=\small] {$D_1$};
-  \draw[primary, line width=1pt] (-2.5,-3) -- ++(1.5,0) |- (nand2.input 1);
+\node[nand gate, draw=accent, line width=1.5pt, logic gate inputs=nn, minimum width=1.4cm, minimum height=1cm] (nand1) at (4.5,2.2) {};
+\node[nand gate, draw=accent, line width=1.5pt, logic gate inputs=nn, minimum width=1.4cm, minimum height=1cm] (nand2) at (4.5,-2.2) {};
+\node[nand gate, draw=secondary, line width=1.5pt, logic gate inputs=nn, minimum width=1.4cm, minimum height=1cm] (nand3) at (9,0) {};
 
-  \draw[accent, line width=1.2pt] (nand1.output) -- ++(1.2,0) |- (nand3.input 1);
-  \draw[accent, line width=1.2pt] (nand2.output) -- ++(1.2,0) |- (nand3.input 2);
-  \draw[secondary, line width=1.5pt, -{Stealth}] (nand3.output) -- ++(1.5,0) node[right, font=\small] {$Y$};
+% --- Inputs ---
+\draw[primary, line width=1.2pt, -{Stealth}] (-2.5,0) -- (not.input) 
+  node[pos=0.35, above, font=\small, fill=white, inner sep=2pt] {$S$};
 
-  \node[font=\footnotesize\sffamily, fill=white, inner sep=3pt] at (4.5,2.5) {NAND1};
-  \node[font=\footnotesize\sffamily, fill=white, inner sep=3pt] at (4.5,-1.1) {NAND2};
-  \node[font=\footnotesize\sffamily, fill=white, inner sep=3pt] at (9,0.7) {NAND3};
+\draw[primary, line width=1.2pt, -{Stealth}] (-2.5,2.2) -- (nand1.input 1) 
+  node[pos=0.35, above, font=\small, fill=white, inner sep=2pt] {$D_0$};
+\draw[primary, line width=1.2pt, -{Stealth}] (-2.5,-2.2) -- (nand2.input 2) 
+  node[pos=0.35, below, font=\small, fill=white, inner sep=2pt] {$D_1$};
+
+% --- S branch to NAND2 (top input) ---
+\draw[primary, line width=1pt] (-2.5,0) -- (-1.2,0);
+\fill[primary] (-1.2,0) circle (1.5pt);  % junction dot
+\draw[primary, line width=1pt] (-1.2,0) -- (-1.2,-1.6) -- (nand2.input 1);
+
+% --- Sbar from NOT to NAND1 (bottom input) ---
+\draw[primary, line width=1pt] (not.output) -- (1.5,0) -- (1.5,1.6) -- (nand1.input 2);
+\node[font=\small, fill=white, inner sep=2pt, anchor=west] at (1.55,0.8) {$\overline{S}$};
+
+% --- NAND1 / NAND2 outputs to NAND3 ---
+\draw[accent, line width=1.2pt] (nand1.output) -- ++(1.2,0) |- (nand3.input 1);
+\draw[accent, line width=1.2pt] (nand2.output) -- ++(1.2,0) |- (nand3.input 2);
+
+% --- Final output ---
+\draw[secondary, line width=1.5pt, -{Stealth}] (nand3.output) -- ++(1.5,0) 
+  node[right, font=\small, fill=white, inner sep=2pt] {$Y$};
+
+% --- Gate labels ---
+\node[font=\footnotesize\sffamily\bfseries, color=accent, above=0.25cm of nand1] {NAND1};
+\node[font=\footnotesize\sffamily\bfseries, color=accent, below=0.25cm of nand2] {NAND2};
+\node[font=\footnotesize\sffamily\bfseries, color=secondary, above=0.25cm of nand3] {NAND3};
+
 \end{tikzpicture}
 \caption{Logic diagram: NOT gate produces $\overline{S}$, NAND1 and NAND2 generate the intermediate terms, and NAND3 combines them for the final output.}
 \label{fig:logic}
