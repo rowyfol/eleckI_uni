@@ -2,6 +2,7 @@
 
 % ============================================================
 %  ELECTRONICS I PROJECT REPORT
+%  Clean, readable, and authentic style
 % ============================================================
 
 \usepackage[utf8]{inputenc}
@@ -130,7 +131,6 @@
 \textbf{Course:} & Electronics I \\
 \textbf{Supervisor:} & Dr. Shatrian \\
 \textbf{Authors:} & Ashkan Namjoo \quad \& \quad Sadra Jahanshalo \\
-\textbf{\quad} & 403412087\quad \quad \quad \quad \quad \quad403412030 \\
 \textbf{University:} & Shahid Bahonar University of Kerman \\
 \textbf{Date:} & \today \\
 \end{tabular}
@@ -288,11 +288,6 @@ Figure~\ref{fig:schematic} shows the full transistor-level implementation. This 
 \caption{Complete RTL schematic of the 2-to-1 multiplexer. The circuit uses 8 transistors, 5 pull-up resistors (1K$\Omega$), 8 base resistors (10K$\Omega$), and one LED current-limiting resistor (330$\Omega$).}
 \label{fig:schematic}
 \end{figure}
-
-\begin{keypoint}
-\textbf{How to read this schematic:} Follow the +5V rail at the top down through each pull-up resistor to a transistor collector. Trace the emitter of the top transistor to the collector of the bottom transistor in each NAND pair. The bottom emitter always goes to ground. The base resistors connect the inputs directly to the transistor bases.
-\end{keypoint}
-
 % ============================================================
 \section{Design Calculations}
 % ============================================================
@@ -320,11 +315,6 @@ R_B = \frac{V_{CC} - V_{BE}}{I_B} = \frac{5\,\text{V} - 0.7\,\text{V}}{0.4\,\tex
 \end{equation}
 
 We used the standard value of 10K$\Omega$.
-
-\begin{keypoint}
-\textbf{Why this matters:} If $R_B$ is too large, the transistor barely turns on and stays in the active region. The output voltage floats somewhere between 0V and 5V instead of snapping to a clean logic level.
-\end{keypoint}
-
 \subsection{Collector Pull-Up Resistor (1K$\Omega$)}
 
 The pull-up resistor determines the logic HIGH level and the current drawn when the transistor is ON.
@@ -349,6 +339,8 @@ This is a safe, bright current for a standard 5mm LED.
 
 We used an LM7805 linear voltage regulator to provide a clean, stable +5V rail from a 9V battery. The LM7805 is a three-terminal regulator that maintains its output at exactly 5V regardless of load variations, as long as the input stays at least 2--3V above the output. This stability is important for RTL circuits because transistor thresholds and logic levels depend directly on the supply voltage.
 
+\newpage
+
 % ============================================================
 \section{The Breadboard Build}
 % ============================================================
@@ -366,9 +358,6 @@ We divided the breadboard into clean sections:
   \item \textbf{Center-right:} NAND3 (Q6, Q7)
   \item \textbf{Right side:} LED driver Q8 and the output LED
 \end{enumerate}
-
-Keeping each NAND gate in its own vertical column helped us avoid spaghetti wiring. The +5V rail runs along the top red line, and GND runs along the bottom blue line.
-
 \subsection{The Breadboard Layout}
 
 Figure~\ref{fig:breadboard} shows our actual physical build.
@@ -398,7 +387,8 @@ Figure~\ref{fig:breadboard} shows our actual physical build.
 
 
 \begin{keypoint}
-\textbf{How to read the breadboard photo:} Look for the +5V (red) and GND (blue) rails running horizontally along the top and bottom edges. Each transistor has three legs: the left leg is the collector (connected to the pull-up resistor), the middle leg is the base (connected to the input resistor), and the right leg is the emitter (connected to ground or to the next transistor's collector).
+\textbf{Setting D0 and D1 manually:} In this prototype, the data inputs are not controlled by switches. Instead, you must wire D0 and D1 directly to either +5V (HIGH) or GND (LOW). Look at the four small breadboards arranged together. Ignore the board with the LED and the one with the potentiometer. The top-left board is for D0, and the bottom-right board is for D1. On each board, find the wire that connects the 10K base resistor to the transistor base. Move that wire to the +5V rail for a HIGH input, or to the GND rail for a LOW input.
+
 \end{keypoint}
 
 \subsection{Verification Measurements}
