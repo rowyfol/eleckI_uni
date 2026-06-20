@@ -124,13 +124,13 @@
 
 \vspace{1cm}
 
-{\Large\itshape A Hands-on Transistor-Level Analysis}
 \vspace{2cm}
 
 \begin{tabular}{rl}
-\textbf{Authors:} & Ashkan Namjoo \quad \& \quad Sadra Jahanshalo \\
 \\
 \textbf{Course:} & Electronics I \\
+\textbf{Supervisor:} & Dr. Shatrian \\
+\textbf{Authors:} & Ashkan Namjoo \quad \& \quad Sadra Jahanshalo \\
 \textbf{University:} & Shahid Bahonar University of Kerman \\
 \textbf{Date:} & \today \\
 \end{tabular}
@@ -294,6 +294,66 @@ Figure~\ref{fig:schematic} shows the full transistor-level implementation. This 
 \end{keypoint}
 
 % ============================================================
+\section{Design Calculations}
+% ============================================================
+
+When building a circuit from discrete components, you cannot just guess resistor values. Every value affects how the transistor behaves. Here is how we chose ours.
+
+\subsection{Base Resistor (10K$\Omega$)}
+
+The base resistor controls how much current enters the transistor base. For the transistor to act as a solid switch, it must be in \textit{deep saturation}---not just barely on.
+
+The collector current is set by the pull-up resistor:
+\begin{equation}
+I_C \approx \frac{V_{CC}}{R_C} = \frac{5\,\text{V}}{1\,\text{k}\Omega} = 5\,\text{mA}
+\end{equation}
+
+To guarantee saturation, we use a forced beta ($\beta_{forced}$) much lower than the transistor's actual current gain (typically 100--300 for 2N3904). We chose $\beta_{forced} \approx 12$:
+
+\begin{equation}
+I_B = \frac{I_C}{\beta_{forced}} = \frac{5\,\text{mA}}{12} \approx 0.4\,\text{mA}
+\end{equation}
+
+Then the base resistor is:
+\begin{equation}
+R_B = \frac{V_{CC} - V_{BE}}{I_B} = \frac{5\,\text{V} - 0.7\,\text{V}}{0.4\,\text{mA}} \approx 10.7\,\text{k}\Omega
+\end{equation}
+
+We used the standard value of 10K$\Omega$.
+
+\begin{keypoint}
+\textbf{Why this matters:} If $R_B$ is too large, the transistor barely turns on and stays in the active region. The output voltage floats somewhere between 0V and 5V instead of snapping to a clean logic level.
+\end{keypoint}
+
+\subsection{Collector Pull-Up Resistor (1K$\Omega$)}
+
+The pull-up resistor determines the logic HIGH level and the current drawn when the transistor is ON.
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Logic HIGH:} When the transistor is OFF, the pull-up holds the output near 5V.
+  \item \textbf{Power:} When the transistor is ON, current flows through the resistor to ground. With $R_C = 1\,\text{k}\Omega$, this current is about 5mA---enough to drive the next stage but not so much that the transistor overheats.
+  \item \textbf{Speed:} A smaller resistor charges the parasitic capacitance faster, but draws more power. 1K$\Omega$ is a standard compromise for RTL.
+\end{itemize}
+
+\subsection{LED Current-Limiting Resistor (330$\Omega$)}
+
+The LED needs a specific current to glow brightly without burning out. Red LEDs typically drop about 1.8V.
+
+\begin{equation}
+I_{LED} = \frac{V_{CC} - V_{LED} - V_{CE(sat)}}{R_{LED}} = \frac{5\,\text{V} - 1.8\,\text{V} - 0.2\,\text{V}}{330\,\Omega} \approx 9\,\text{mA}
+\end{equation}
+
+This is a safe, bright current for a standard 5mm LED.
+
+\subsection{Power Supply (LM7805)}
+
+We used an LM7805 linear voltage regulator to provide a clean, stable +5V rail from a 9V battery. The LM7805 is a three-terminal regulator that maintains its output at exactly 5V regardless of load variations, as long as the input stays at least 2--3V above the output. This stability is important for RTL circuits because transistor thresholds and logic levels depend directly on the supply voltage.
+
+\begin{keypoint}
+\textbf{Why a regulator matters:} Without the LM7805, a fresh 9V battery would start at about 9.6V and drop over time. The changing supply would shift the logic HIGH level and alter the base current, making the circuit behave inconsistently. The LM7805 fixes the rail at 5V, so the transistor switching stays predictable.
+\end{keypoint}
+
+% ============================================================
 \section{The Breadboard Build}
 % ============================================================
 
@@ -320,9 +380,26 @@ Figure~\ref{fig:breadboard} shows our actual physical build.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{bread.png}
-\caption{The MUX constructed on a solderless breadboard. Power is supplied by a 5V regulator module.}
+\caption{The MUX constructed on a solderless breadboard. Power is supplied by an LM7805 5V voltage regulator.}
 \label{fig:breadboard}
 \end{figure}
+
+\begin{center}
+\begin{tikzpicture}
+  \node[
+    draw=primary, 
+    line width=1.5pt, 
+    rounded corners=5pt, 
+    inner sep=15pt, 
+    fill=lightgray,
+    text width=0.5\textwidth,
+    align=center,
+    font=\small\sffamily
+  ] 
+  {\textcolor{primary}{\textbf{\url{https://www.tinkercad.com/things/4JDG91bPrdF-magnificent-leelo-luulia?sharecode=P3w_72XjgpzeE71dH-Q66N6LDBuPjUM-qISmru5L_fw}}}};
+\end{tikzpicture}
+\end{center}
+
 
 \begin{keypoint}
 \textbf{How to read the breadboard photo:} Look for the +5V (red) and GND (blue) rails running horizontally along the top and bottom edges. Each transistor has three legs: the left leg is the collector (connected to the pull-up resistor), the middle leg is the base (connected to the input resistor), and the right leg is the emitter (connected to ground or to the next transistor's collector).
@@ -370,10 +447,6 @@ We connected this wiper to the S input (the base of Q1). Then we slowly turned t
 At first, the LED showed the state of $D_0$. As we turned the knob up, nothing happened for a while. Then, sooner than we expected, the LED started to show $D_1$.
 
 With the 250K$\Omega$ potentiometer, the transition happened slightly earlier than the typical 0.7V threshold. Because the high source resistance limits the base current, the transistor begins to conduct at a lower $V_{BE}$ and enters saturation more gradually. The LED did not snap as sharply as it would with a lower-value potentiometer, but it still switched cleanly once the voltage crossed the active region.
-
-\begin{keypoint}
-\textbf{The key insight:} Digital logic isn't actually digital inside the transistor itself. It's all just analog voltage. We just call it "0" and "1" because the transistor's behavior changes so sharply around 0.7V, but physically, it's operating on a continuous curve.
-\end{keypoint}
 
 Figure~\ref{fig:vtc} shows this voltage transfer characteristic visually.
 
@@ -473,16 +546,12 @@ R3 & Resistor & 1K$\Omega$ & 1 & Q1 collector pull-up \\
 R12 & Resistor & 330$\Omega$ & 1 & LED current limit \\
 LED1 & LED & 5mm red & 1 & Output indicator \\
 RV1 & Potentiometer & 250K$\Omega$ & 1 & Select input sweep \\
-SW1--SW3 & Push button & Tactile & 3 & D0, D1, S inputs \\
+(optional, I didn't use them) SW1--SW3 & Push button & Tactile & 3 & D0, D1, S inputs \\
 -- & Breadboard & MB-102 & 1 & Prototyping \\
 -- & Power supply & 5V module & 1 & VCC rail \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\begin{note}
-All resistors are standard 1/4W carbon film. The 2N3904 is a general-purpose NPN transistor with a typical current gain ($\beta$) of 100--300. By using a 10K$\Omega$ base resistor with a 1K$\Omega$ collector resistor, we are forcing the transistor into deep saturation, making sure it switches reliably.
-\end{note}
 
 % ============================================================
 \section{Conclusion}
