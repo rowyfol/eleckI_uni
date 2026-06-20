@@ -132,6 +132,3 @@ The LED does not fade — it **snaps** from one state to the other at approximat
 | Q6 Collector (NAND3) | ~0V when both inputs HIGH | 57 mV | ✅ |
 
 ---
-## Why Discrete?
-
-No 74LS00. No 555. No microcontroller. Just transistors, resistors, and the physics of a PN junction crossing 0.7V.
